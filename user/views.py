@@ -3,6 +3,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout,authenticate
 
+def user_logout(request):
+    logout(request)
+    return redirect("login")
+
+def user_profile(request):
+    return render(request, "user/profile.html")
+
 # Create your views here.
 def user_login(request):
     message=""     
@@ -21,6 +28,7 @@ def user_login(request):
                     if user:
                         message = "登入成功!"
                         login(request, user)
+                        return redirect("profile")
                     else:
                         message = "帳號或密碼錯誤!"
 
@@ -52,5 +60,6 @@ def user_register(request):
                 user = User.objects.create_user(username=username, password=password1)
                 user.save()
                 message = "註冊成功!"
+                return redirect(request, "user/register.html", {"user":user})
 
     return render(request, "user/register.html", {"form": form, "message": message})
